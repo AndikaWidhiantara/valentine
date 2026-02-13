@@ -94,10 +94,72 @@ onMounted(() => {
 onUnmounted(() => {
   if (heartInterval) clearInterval(heartInterval)
 })
+
+// LOGIN LOGIC
+const username = ref('')
+const password = ref('')
+const isLoggedIn = ref(false)
+const loginError = ref('')
+
+function handleLogin() {
+  if (username.value.toLowerCase() === 'bidadali' && password.value.toLowerCase() === 'peyut mungil') {
+    isLoggedIn.value = true
+    loginError.value = ''
+  } else {
+    loginError.value = 'Hayo siapa? Salah yaa 😝'
+    // Shake animation logic could be added here
+    setTimeout(() => {
+      loginError.value = ''
+    }, 3000)
+  }
+}
 </script>
 
 <template>
-  <div class="valentine-app">
+  <!-- Login Page -->
+  <div v-if="!isLoggedIn" class="login-container">
+    <div class="hearts-bg">
+      <span v-for="n in 20" :key="n" class="bg-heart" :style="{ 
+        left: Math.random() * 100 + '%', 
+        animationDelay: Math.random() * 5 + 's',
+        fontSize: Math.random() * 20 + 10 + 'px'
+      }">♥</span>
+    </div>
+    
+    <div class="login-card">
+      <div class="login-header">
+        <h1>Welcome Love 💕</h1>
+        <p>Login dulu ya sayang</p>
+      </div>
+      
+      <div class="input-group">
+        <input 
+          v-model="username" 
+          type="text" 
+          placeholder="Username" 
+          @keyup.enter="handleLogin"
+        />
+      </div>
+      
+      <div class="input-group">
+        <input 
+          v-model="password" 
+          type="password" 
+          placeholder="Password" 
+          @keyup.enter="handleLogin"
+        />
+      </div>
+
+      <p v-if="loginError" class="error-message">{{ loginError }}</p>
+
+      <button class="login-btn" @click="handleLogin">
+        Masuk 💖
+      </button>
+    </div>
+  </div>
+
+  <!-- Main App -->
+  <div v-else class="valentine-app">
     <!-- Floating hearts background -->
     <div class="hearts-container">
       <span
@@ -808,5 +870,126 @@ body {
   .now-playing-song {
     font-size: 0.85rem;
   }
+}
+
+/* ====== LOGIN PAGE ====== */
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0a0008 0%, #1a0520 100%);
+  position: relative;
+  overflow: hidden;
+  font-family: 'Poppins', sans-serif;
+}
+
+.hearts-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.bg-heart {
+  position: absolute;
+  bottom: -50px;
+  color: rgba(255, 107, 157, 0.2);
+  animation: floatUp 15s linear infinite;
+}
+
+.login-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  padding: 40px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 107, 157, 0.2);
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+  animation: popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 10;
+}
+
+@keyframes popIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.login-header h1 {
+  font-family: 'Playfair Display', serif;
+  color: #ff9ec4;
+  margin-bottom: 10px;
+  font-size: 2rem;
+}
+
+.login-header p {
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 30px;
+  font-size: 0.9rem;
+}
+
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 14px 20px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 107, 157, 0.2);
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.input-group input:focus {
+  border-color: #ff6b9d;
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 15px rgba(255, 107, 157, 0.2);
+}
+
+.input-group input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.login-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #ff6b9d, #c44dff);
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  margin-top: 10px;
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(255, 107, 157, 0.3);
+}
+
+.login-btn:active {
+  transform: translateY(0);
+}
+
+.error-message {
+  color: #ff4d4d;
+  font-size: 0.85rem;
+  margin-bottom: 15px;
+  min-height: 20px;
+  animation: shake 0.4s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
 }
 </style>
